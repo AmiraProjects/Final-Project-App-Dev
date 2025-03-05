@@ -136,6 +136,27 @@ const HomeStack = () => (
   </Stack.Navigator>
 );
 
+const WishlistStack = () => {
+  <Stack.Navigator>
+    <Stack.Screen
+      name="WishlistScreen"
+      component={WishlistScreen}
+      options={{
+        title: 'Wishlist',
+        headerShown: false,
+      }}
+    />
+    <Stack.Screen
+      name="BookDetail"
+      component={DetailBookScreen}
+      options={{
+        title: 'Book Details',
+        headerShown: false,
+      }}
+    />
+  </Stack.Navigator>;
+};
+
 const CustomTabButton = ({label, iconName, onPress, isActive}) => (
   <TouchableOpacity
     style={[styles.tabButton, isActive && styles.activeTab]}
@@ -179,7 +200,7 @@ const MainNavigator = () => {
           );
         }}>
         <Tab.Screen name="Home" component={HomeStack} />
-        <Tab.Screen name="Wishlist" component={WishlistScreen} />
+        <Tab.Screen name="Wishlist" component={WishlistStack} />
       </Tab.Navigator>
     </NavigationContainer>
   );

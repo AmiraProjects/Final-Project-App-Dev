@@ -1,5 +1,5 @@
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import realm from '../database/realm';
 import {ScrollView} from 'react-native';
@@ -7,13 +7,17 @@ import {ScrollView} from 'react-native';
 const DetailBookScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
+  const [isBookmark, setIsBookmark] = useState(false);
   const {title, id, author, rating, page, category, description, bookImage} =
     route.params;
 
   const handleBookMark = () => {
     realm.write(() => {
       const currentBook = realm.objectForPrimaryKey('Book', id);
-      if (!currentBook) {
+      if (currentBook) {
+        currentBook.isBookmark = !currentBook.isBookmark;
+        setIsBookmark(currentBook.isBookmark);
+      } else {
         realm.create('Book', {
           title,
           id,
@@ -23,12 +27,14 @@ const DetailBookScreen = () => {
           category,
           description,
           bookImage,
+          isBookmark: true,
         });
-        alert('Success!');
-      } else {
-        alert('This book is already in ur bookmark');
+        setIsBookmark(true);
       }
     });
+    alert(
+      isBookmark ? 'This book is already in ur bookmark' : 'Saved to Bookmark!',
+    );
   };
 
   useEffect(() => {
@@ -76,12 +82,10 @@ const DetailBookScreen = () => {
           {/* </View> */}
           {/* <View style={styles.buttonContainer}> */}
           <View style={styles.bookmarkContainer}>
-            <TouchableOpacity
-              onPress={() => {
-                handleBookMark();
-              }}
-              style={styles.bookmark}>
-              <Text>Add to Bookmark</Text>
+            <TouchableOpacity onPress={handleBookMark} style={styles.bookmark}>
+              <Text>
+                {isBookmark ? 'Remove from Bookmark' : 'Add to bookmark'}
+              </Text>
             </TouchableOpacity>
           </View>
           {/* </View> */}
